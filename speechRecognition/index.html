@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Speech to Sign Language Animation Project | Speech API</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <script src="https://unpkg.com/@phosphor-icons/web@2.0.3"></script>
+    <script src="https://cdn.socket.io/4.1.2/socket.io.min.js" integrity="sha384-toS6mmwu70G0fw54EGlWWeA4z3dyJ+dlXBtSURSKN4vyRFOcxd3Bzjj/AoOwY+Rg" crossorigin="anonymous"></script>
+</head>
+<body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light px-4">
+    <a class="navbar-brand" href="#">Speech to Text</a>
+</nav>
+
+<div class="my-4 mx-4">
+
+        <div class="btn-group">
+            <button type="button" id="startListening" class="btn btn-light">
+                <i class="ph ph-microphone"></i></button>
+
+            <button type="button" id="stopListening" class="btn btn-light" disabled>
+                <i class="ph ph-stop"></i></button>
+        </div>
+
+        <button type="button" id="sendPrompt" class="btn btn-secondary" disabled>
+            <i class="ph ph-gear-six"></i>
+            Process
+        </button>
+
+        <button type="button" id="sendToAnimation" class="btn btn-secondary">
+            <i class="ph ph-play"></i>
+            Send Prompt to Animation Panel
+        </button>
+
+        <hr class="col-1 my-4">
+
+        <label class="form-label">Alternatives</label>
+        <ul class="list-group" id="alternatives" style="cursor: pointer">
+            <li class="list-group-item">-</li>
+        </ul>
+
+        <hr class="col-1 my-4">
+
+        <div class="mb-3">
+            <label for="result" class="form-label">Prompt</label>
+            <textarea class="form-control" id="result" rows="5">Babamlar, yarın kitabımı getirecekler.</textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="result" class="form-label">Processed Prompt</label>
+            <textarea class="form-control" id="processed" rows="5">benim baba yarın benim kitap getirmek</textarea>
+        </div>
+
+        <hr class="col-1 my-4">
+
+        <span class="btn btn-danger" id="socketStatus">
+            <i class="ph ph-link-break"></i>
+        </span>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+        crossorigin="anonymous"></script>
+<script src='assets/main.js'></script>
+</body>
+</html>

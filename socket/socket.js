@@ -26,12 +26,23 @@ function startSocketServer() {
             }
         });
         socket.on('prompt', function (data) {
-            var prompt = new Prompt(data);
+            var prompt = new Prompt(data.trim());
             socket.emit('processedPrompt', prompt.sentence.processed);
+            socket.emit('processedWords', prompt.sentence.words.map(function (word) {
+                return {
+                    type: word.type,
+                    word: word.root,
+                    animationData: word.animationData
+                };
+            }));
         });
         socket.on('sendToAnimation', function (data) {
             console.log(" [SOCKET] Send prompt to Animation API: " + data);
             animationSocket.emit('prompt', data);
+        });
+        socket.on('sendToAnimationData', function (data) {
+            console.log(" [SOCKET] Send prompt to Animation API: " + data);
+            animationSocket.emit('promptData', data);
         });
     });
     var PORT = 4100;

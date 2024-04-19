@@ -2,7 +2,10 @@ const {spawn, execSync} = require("child_process");
 
 class Python {
     static parse(...args) {
-        return execSync(__dirname + '/../python/dist/main.exe ' + args.join(' ')).toString()
+        //console.log(__dirname + '/../python/dist/main.exe ' + args.join(' '))
+        const result = execSync(__dirname + '/../python/dist/main.exe ' + args.join(' ')).toString();
+        //console.log(result)
+        return result;
     }
 }
 

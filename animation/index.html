@@ -17,13 +17,14 @@
 <nav class="navbar navbar-expand-lg navbar-light bg-light px-4 justify-content-between" style="z-index: 9999;">
     <a class="navbar-brand" href="#">Animation</a>
     <div class="btn-group">
-        <button class="btn btn-primary fs-6" id="play">
+        <button class="btn btn-primary fs-6" id="play" style="display: none">
             <i class="ph ph-play"></i>
         </button>
-        <button class="btn btn-danger fs-6" id="pause">
-            <i class="ph ph-stop"></i>
-        </button>
     </div>
+
+    <button class="btn btn-danger fs-6" id="pause">
+        <i class="ph ph-stop"></i>
+    </button>
 </nav>
 
 <div class="container my-5">
@@ -33,7 +34,8 @@
 </div>
 
 <span class="action bg-light">
-    <span class="prompt" id="prompt">Prompt Waiting</span>
+    <span class="prompt" id="words">Prompt Waiting</span>
+    <span class="prompt" style="display: none" id="prompt">Prompt Waiting</span>
     <br>
     <span class="word" id="word">-</span>
 </span>

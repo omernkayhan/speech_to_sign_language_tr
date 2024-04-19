@@ -35,6 +35,69 @@ socket.on('processedPrompt', (processed) => {
     document.getElementById('processed')?.value = processed;
 });
 
+let processedData = [
+    {
+        "type": "belirteç",
+        "word": "şimdi",
+        "animationData": {
+            "type": "word",
+            "animation": "undefined"
+        }
+    },
+    {
+        "type": "isim",
+        "word": "ece",
+        "animationData": {
+            "type": "letters",
+            "name": "ece",
+            "letters": [
+                {
+                    "type": "letter",
+                    "animation": "e"
+                },
+                {
+                    "type": "letter",
+                    "animation": "c"
+                },
+                {
+                    "type": "letter",
+                    "animation": "e"
+                }
+            ]
+        }
+    },
+    {
+        "type": "isim",
+        "word": "yemek",
+        "animationData": {
+            "type": "word",
+            "animation": "yemek"
+        }
+    },
+    {
+        "type": "fiil",
+        "word": "(F)yemek",
+        "animationData": {
+            "type": "word",
+            "animation": "(F)yemek"
+        }
+    },
+    {
+        "type": "fiil",
+        "word": "gitmek",
+        "animationData": {
+            "type": "word",
+            "animation": "gitmek"
+        }
+    }
+];
+
+socket.on('processedWords', (data) => {
+    // @ts-ignore
+    document.getElementById('processedData').innerHTML = JSON.stringify(data, ' ', ' ');
+    processedData = data;
+});
+
 if (!('webkitSpeechRecognition' in window)) {
     console.error('Web Speech API is not supported on this browser.');
 } else {
@@ -86,5 +149,6 @@ if (!('webkitSpeechRecognition' in window)) {
     document.getElementById('sendToAnimation')?.addEventListener('click', () => {
        // @ts-ignore
         socket.emit('sendToAnimation', document.getElementById('processed')?.value);
+        socket.emit('sendToAnimationData', processedData);
     });
 }

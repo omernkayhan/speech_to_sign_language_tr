@@ -1,0 +1,23 @@
+-mek/-mak sorunu çözüldü
+çokluk eki eklendi
+olumsuzluk ekleri eklendi
+birinci tekil kişi (kalemimi alıyorum) eklendi
+onlar kalemlerimi ve kitaplarımı alıyorlar / kalemlerimi ve kitaplarımı alıyorlar sorunu çözüldü
+gizli zamirler
+
+
+
+
+TEST CÜMLELERİ:
+bir kalemimi ve kitaplarımı almıyoruz
+onlar kalemlerimi ve kitaplarımı alıyorlar
+babam ve annem, yarın kitabımı getirmeye gidecek
+ece yemek yemeye gidiyor
+
+
+KELİMELER:
+idle undefined baba benim değil getirmek yarın yemek ben sen çok okul gitmek
+(F)yemek
+
+HARFLER:
+A T E C

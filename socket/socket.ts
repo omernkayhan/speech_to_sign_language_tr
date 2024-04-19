@@ -30,13 +30,25 @@ export default function startSocketServer(){
         });
 
         socket.on('prompt', (data) => {
-            const prompt = new Prompt(data);
+            const prompt = new Prompt(data.trim());
             socket.emit('processedPrompt', prompt.sentence.processed);
+            socket.emit('processedWords', prompt.sentence.words.map((word) => {
+                return {
+                    type: word.type,
+                    word: word.root,
+                    animationData: word.animationData
+                }
+            }));
         });
 
         socket.on('sendToAnimation', (data) => {
             console.log(" [SOCKET] Send prompt to Animation API: " + data);
             animationSocket.emit('prompt', data);
+        });
+
+        socket.on('sendToAnimationData', (data) => {
+            console.log(" [SOCKET] Send prompt to Animation API: " + data);
+            animationSocket.emit('promptData', data);
         });
     });
 

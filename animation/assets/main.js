@@ -1,4 +1,62 @@
 (function () {
+
+    const exampleResponse = [
+        {
+            "type": "belirteç",
+            "word": "şimdi",
+            "animationData": {
+                "type": "word",
+                "animation": "undefined"
+            }
+        },
+        {
+            "type": "isim",
+            "word": "ece",
+            "animationData": {
+                "type": "letters",
+                "name": "ece",
+                "letters": [
+                    {
+                        "type": "letter",
+                        "animation": "e"
+                    },
+                    {
+                        "type": "letter",
+                        "animation": "c"
+                    },
+                    {
+                        "type": "letter",
+                        "animation": "e"
+                    }
+                ]
+            }
+        },
+        {
+            "type": "isim",
+            "word": "yemek",
+            "animationData": {
+                "type": "word",
+                "animation": "yemek"
+            }
+        },
+        {
+            "type": "fiil",
+            "word": "(F)yemek",
+            "animationData": {
+                "type": "word",
+                "animation": "(F)yemek"
+            }
+        },
+        {
+            "type": "fiil",
+            "word": "gitmek",
+            "animationData": {
+                "type": "word",
+                "animation": "gitmek"
+            }
+        }
+    ];
+
     // Set our main variables
     let scene,
         renderer,
@@ -15,21 +73,23 @@
     let animationQueue = [];
     let wordIndex = -1;
 
+    let wordsData = [];
+
     const updateWordIndex = (value = null) => {
-        if(value === null) {
+        if (value === null) {
             wordIndex++;
-        }else{
+        } else {
             wordIndex = value;
         }
-        if(wordIndex === -1){
+        if (wordIndex === -1) {
             document.getElementById('word').innerHTML = '-';
-        }else{
+        } else {
             document.getElementById('word').innerHTML = words[wordIndex];
             let promptHTML = '';
             words.forEach((word, index) => {
-                if(index === wordIndex){
+                if (index === wordIndex) {
                     promptHTML += `<span class="badge text-bg-warning me-2" style="font-size: 16px;">${word}</span>`;
-                }else{
+                } else {
                     promptHTML += `${word} `;
                 }
             });
@@ -57,6 +117,7 @@
     });
 
     socket.on('prompt', (data) => {
+        //console.log(data);
         updateWordIndex(-1);
         document.getElementById('prompt').innerHTML = data;
         words = data.split(' ');
@@ -64,12 +125,111 @@
             const anim = animations.filter(a => a._clip.name === word)[0];
             if (anim) {
                 animationQueue.push(anim);
-            }else{
-                console.log('Animation not found', word);
-                animationQueue.push(animations.filter(a => a._clip.name === 'undefined')[0]);
+            } else {
+                const letters = word.split('');
+                if (letters.filter(l => animations.filter(a => a._clip.name === `[${l.toUpperCase()}]`).length).length === letters.length) {
+                    letters.forEach(l => {
+                        animationQueue.push(animations.find(a => a._clip.name === `[${l.toUpperCase()}]`));
+                    });
+                } else {
+                    animationQueue.push(animations.filter(a => a._clip.name === 'undefined')[0]);
+                }
             }
         });
     });
+
+    socket.on('promptData', (data) => {
+        const words = data.map(d => {
+            if (d.word.indexOf(')') !== -1) {
+                return d.word.split(')')[1] + '[Fiil]'
+            }
+            return d.word;
+        });
+        //updateWordIndex(-1);
+        document.getElementById('words').innerHTML = words.join(' ');
+        wordsData = data.map(d => {
+            let _animations = [];
+            if (d.animationData.type === 'word') {
+                _animations.push({
+                    ...d.animationData,
+                    clip: animations.find(a => a._clip.name === d.animationData.animation)
+                });
+            } else {
+                d.animationData.letters.forEach(l => {
+                    _animations.push({
+                        ...l,
+                        clip: animations.find(a => a._clip.name.toLowerCase() === '[' + l.animation.toLowerCase() + ']')
+                    });
+                });
+            }
+            return {
+                ...d,
+                animations: _animations
+            }
+        });
+        playAnimations();
+    });
+
+    let queue = [];
+    let queueIndex = 0;
+    let queueWordIndexes = [];
+
+    const setSelectedWord = (index) => {
+        if (index === -2) {
+            document.getElementById('words').innerHTML = 'Animation stopped';
+            return;
+        }
+        if (index === -1) {
+            document.getElementById('words').innerHTML = 'Animation finished';
+            return;
+        }
+        const words = wordsData.map(d => {
+            if (d.word.indexOf(')') !== -1) {
+                return d.word.split(')')[1];
+            }
+            return d.word;
+        }).map((word, i) => {
+            return i === index ? `<span class="badge bg-warning text-black mx-1" style="font-size: 16px;">${word}</span>` : word;
+        });
+        //updateWordIndex(-1);
+        document.getElementById('words').innerHTML = words.join(' ');
+    }
+
+    const playAnimations = () => {
+        queue = [];
+        queueWordIndexes = [];
+        queueIndex = 0;
+        mixer.stopAllAction();
+
+        for (let index = 0; index < wordsData.length; index++) {
+            const wordData = wordsData[index];
+            for (let i = 0; i < wordData.animations.length; i++) {
+                queue.push(wordData.animations[i].clip);
+                queueWordIndexes.push(index);
+            }
+        }
+        //console.log(queue);
+        //console.log(queueWordIndexes);
+
+        if (queue.length > 0) {
+            idle.stop();
+            const action = queue[queueIndex];
+            setSelectedWord(queueWordIndexes[queueIndex]);
+            let letter = '';
+            if (wordsData[queueWordIndexes[queueIndex]].animationData.type === 'letters') {
+                letter = action._clip.name.replace('[', '').replace(']', '');
+            }
+            let word = wordsData[queueWordIndexes[queueIndex]].word;
+            if (word.indexOf(')') !== -1) {
+                word = word.split(')')[1];
+            }
+            document.getElementById('word').innerHTML = '<div class="badge bg-success text-white me-2" style="font-size: 20px;">' + wordsData[queueWordIndexes[queueIndex]].type + '</div>'
+                + word + (wordsData[queueWordIndexes[queueIndex]].animationData.type === 'letters' ? (' (' + letter + ')') : '')
+            queueIndex++;
+            action.reset();
+            action.play();
+        }
+    }
 
     init();
 
@@ -170,37 +330,38 @@
                     animations.push(action);
                 });
 
-                console.log(animations)
+                //console.log(animations)
 
                 mixer.addEventListener('finished', function (e) {
-                    if (animationQueue.length === 0) {
-                        if(words.length > 0) {
-                            document.getElementById('prompt').innerHTML = 'Animation is finished';
-                            updateWordIndex(-1);
-                            idle.play();
+                    if (e.action._clip.name !== 'idle' && queueIndex < queue.length) {
+                        const action = queue[queueIndex];
+                        setSelectedWord(queueWordIndexes[queueIndex]);
+                        let letter = '';
+                        if (wordsData[queueWordIndexes[queueIndex]].animationData.type === 'letters') {
+                            letter = action._clip.name.replace('[', '').replace(']', '');
                         }
-                        return;
+                        let word = wordsData[queueWordIndexes[queueIndex]].word;
+                        if (word.indexOf(')') !== -1) {
+                            word = word.split(')')[1];
+                        }
+                        document.getElementById('word').innerHTML = '<div class="badge bg-success text-white me-2" style="font-size: 20px;">' + wordsData[queueWordIndexes[queueIndex]].type + '</div>'
+                            + word + (wordsData[queueWordIndexes[queueIndex]].animationData.type === 'letters' ? (' (' + letter + ')') : '')
+                        queueIndex++;
+                        action.reset();
+                        action.play();
+                    } else if (queueIndex === queue.length) {
+                        document.getElementById('word').innerHTML = '-';
+                        setSelectedWord(-1);
+                        idle.reset();
+                        idle.play();
                     }
-                    updateWordIndex();
-                    let action = animationQueue.shift();
-                    action.reset();
-                    action.play();
-                });
-
-                document.getElementById('play').addEventListener('click', e => {
-                    idle.stop();
-                    updateWordIndex();
-                    let action = animationQueue.shift();
-                    action.reset();
-                    action.play();
                 });
 
                 document.getElementById('pause').addEventListener('click', e => {
-                    updateWordIndex(-1);
-                    idle.stop();
-                    document.getElementById('prompt').innerHTML = 'Animation is stopped';
-                    animationQueue = [];
+                    document.getElementById('word').innerHTML = '-';
+                    setSelectedWord(-2);
                     mixer.stopAllAction();
+                    idle.reset();
                     idle.play();
                 });
 
@@ -231,6 +392,7 @@
 
 
     function update() {
+
         if (mixer) {
             mixer.update(clock.getDelta());
         }
@@ -243,6 +405,7 @@
 
         renderer.render(scene, camera);
         requestAnimationFrame(update);
+
     }
 
     update();

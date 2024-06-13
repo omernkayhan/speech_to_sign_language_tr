@@ -4,6 +4,7 @@ olumsuzluk ekleri eklendi
 birinci tekil kişi (kalemimi alıyorum) eklendi
 onlar kalemlerimi ve kitaplarımı alıyorlar / kalemlerimi ve kitaplarımı alıyorlar sorunu çözüldü
 gizli zamirler
+yemek fiili sorunu çözüldü
 
 
 
@@ -14,10 +15,17 @@ onlar kalemlerimi ve kitaplarımı alıyorlar
 babam ve annem, yarın kitabımı getirmeye gidecek
 ece yemek yemeye gidiyor
 
+Baba, yarın okula gitmek istiyorum.
+Yemek yemek ve su içmek istiyorum.
+Meyve yemek istiyorum.
+Okula gitmek ve ödevimi yapmak istiyorum.
+İlaç içiyorum.
+Babam ilaç içiyor.
+100 meyve yemek istiyorum.
 
 KELİMELER:
-idle undefined baba benim değil getirmek yarın yemek ben sen çok okul gitmek
-(F)yemek
+baba, benim, değil, getirmek, yarın, yemek, (F)yemek, ben, sen, çok, okul, gitmek, ve, ödev, içmek, su, meyve, şimdi, ev, ilaç, istemek, yapmak, 100
 
 HARFLER:
 A T E C
+

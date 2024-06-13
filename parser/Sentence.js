@@ -5,7 +5,7 @@ class Sentence {
     words = [];
 
     static animationData = {
-        words: ['baba', 'benim', 'değil', 'getirmek', 'yarın', 'yemek', 'ben', 'sen', 'çok', 'okul', 'gitmek', '(F)yemek'],
+        words: ['baba', 'benim', 'değil', 'getirmek', 'yarın', 'yemek', 'ben', 'sen', 'çok', 'okul', 'gitmek', '(F)yemek', 've', 'ödev', 'içmek', 'su', 'meyve', 'şimdi', 'ev', 'ilaç', 'istemek', 'yapmak', '100'],
         letters: ['a', 't', 'e', 'c']
     };
 
@@ -17,7 +17,7 @@ class Sentence {
 
     findWords() {
         this.sentence.split(' ').map((word, index) => {
-            const wordObject = new Word(word, this);
+            const wordObject = new Word(word, this, this.words[this.words.length - 1] ?? null);
             if (wordObject.prefixes.length) {
                 this.words.push(...wordObject.prefixes);
             }

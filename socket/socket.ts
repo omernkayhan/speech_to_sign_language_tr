@@ -11,6 +11,7 @@ export default function startSocketServer(){
 
     require('../parser/utils');
     const Prompt = require('../parser/prompt');
+    const Sentence = require('../parser/Sentence');
 
     let animationSocket: Socket = null;
 
@@ -47,7 +48,7 @@ export default function startSocketServer(){
         });
 
         socket.on('sendToAnimationData', (data) => {
-            console.log(" [SOCKET] Send prompt to Animation API: " + data);
+            console.log(" [SOCKET] Send prompt to Animation API: ", data);
             animationSocket.emit('promptData', data);
         });
     });
@@ -56,6 +57,9 @@ export default function startSocketServer(){
     server.listen(PORT, () => {
         console.log(` | Socket Server is listening on port ${PORT}                                       |`);
         console.log(` *-------------------------------------------------------------------------------*`);
+        console.log(` [INFO] ${Sentence.animationData.words.length} words has animation data.`);
+        console.log(` [INFO] ${Sentence.animationData.letters.length} letters has animation data.`);
+        console.log(` [INFO] ${Sentence.animationData.words.length + Sentence.animationData.letters.length} total animation data.`);
     });
 
 }

@@ -10,6 +10,7 @@ function startSocketServer() {
     var io = new socket_io_1.Server(server);
     require('../parser/utils');
     var Prompt = require('../parser/prompt');
+    var Sentence = require('../parser/Sentence');
     var animationSocket = null;
     app.use(cors());
     io.on('connection', function (socket) {
@@ -41,7 +42,7 @@ function startSocketServer() {
             animationSocket.emit('prompt', data);
         });
         socket.on('sendToAnimationData', function (data) {
-            console.log(" [SOCKET] Send prompt to Animation API: " + data);
+            console.log(" [SOCKET] Send prompt to Animation API: ", data);
             animationSocket.emit('promptData', data);
         });
     });
@@ -49,6 +50,9 @@ function startSocketServer() {
     server.listen(PORT, function () {
         console.log(" | Socket Server is listening on port ".concat(PORT, "                                       |"));
         console.log(" *-------------------------------------------------------------------------------*");
+        console.log(" [INFO] ".concat(Sentence.animationData.words.length, " words has animation data."));
+        console.log(" [INFO] ".concat(Sentence.animationData.letters.length, " letters has animation data."));
+        console.log(" [INFO] ".concat(Sentence.animationData.words.length + Sentence.animationData.letters.length, " total animation data."));
     });
 }
 exports.default = startSocketServer;

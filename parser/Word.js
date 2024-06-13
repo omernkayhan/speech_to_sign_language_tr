@@ -2,16 +2,29 @@ const {getWords, getData} = require("./SignLanguage");
 const Python = require("./Python");
 
 class Word {
+
+    static synonims = {
+        'ile': 've',
+    };
+
     prefixes = [];
     postfixes = [];
     sentence = null;
     sentenceStartWords = [];
-    constructor(word, sentence) {
+    beforeWord = null;
+    constructor(word, sentence, beforeWord = null) {
+        this.beforeWord = beforeWord;
         this.original = word;
         this.firstCharCapitalized = word.capitalizeFirstLetter();
         this.lowerCase = word.turkishToLower();
         this.sentence = sentence;
-        if (getWords().includes(this.lowerCase)) {
+        this.processSynonyms();
+        if(!isNaN(word)){
+            this.root = this.lowerCase;
+            this.type = 'sayı';
+            this.meanings = null;
+            this.suffixes = [];
+        } else if (getWords().includes(this.lowerCase)) {
             this.root = this.lowerCase;
             this.type = getData().find(w => w.word.word.includes(this.lowerCase)).data[0].badges[0]
             this.meanings = getData().find(w => w.word.word.includes(this.lowerCase)).data;
@@ -31,12 +44,24 @@ class Word {
             }
         }
 
-        //Yemek fiilini ayırma
+        this.processSpecialVerbs();
+        this.processPrefix();
+
+    }
+
+    processSynonyms(){
+        this.lowerCase = Word.synonims[this.lowerCase] ?? this.lowerCase;
+    }
+
+    processSpecialVerbs(){
         if(this.root === 'yemek' && this.type === 'fiil'){
             this.root = `(F)${this.root}`;
         }
 
-        this.processPrefix();
+        if(this.root === 'yemek' && this.beforeWord && this.beforeWord.type === 'isim'){
+            this.root = `(F)${this.root}`;
+            this.type = 'fiil';
+        }
     }
 
     processPrefix() {
